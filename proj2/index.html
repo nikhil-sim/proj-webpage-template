@@ -1,7 +1,74 @@
 <html>
 	<head>
+		<title>Meshedit</title>
 	</head>
 	<body>
-		Project 2 here
+		<h1>CS 184 Project 2: Meshedit</h1>
+
+		<h2>Task 1 (Bezier Curves with 1D de Casteljau Subdivision)</h2>
+		<h3>De Casteljau's Algorithm</h3>
+		<p>De Casteljau's algorithm is essentially repeated linear interpolation applied recursively. Given a starting set of n control points, the algorithm involves applying linear interpolation between adjacent control points to form a set of n - 1 lines (parameterized by t) that subsequently gives rise to n - 1 point on which this algorithm is recursively applied until you get a single point that ends up tracing the curve. I implemented the algorithm by first creating a helper function called lerp_m that was defined the same way as the lerp functions from lecture have been. In each run of evaluateStep, I derived n - 1  points by applying lerp_m to each adjacent set of the passed in points where the output was the result of the linearly interpolated line evaluated at t (lerp_m is 1D, so I did this for both the x and y positions of the vector). The source code took care of the recursive application of the function.</p>
+		<h3>Task 1 Images</h3>
+		<figcaption>Bezier Curve: 6 Control Points</figcaption>
+		<img src="task1_l0.png" width="800"/>
+		<br/>
+		<figcaption>Bezier Curve: One Step</figcaption>
+		<img src="task1_l1.png" width="800"/>
+		<figcaption>Bezier Curve: Two Steps</figcaption>
+		<img src="task1_l2.png" width="800"/>
+		<figcaption>Bezier Curve: Three Steps</figcaption>
+		<img src="task1_l3.png" width="800"/>
+		<figcaption>Bezier Curve: Four Steps</figcaption>
+		<img src="task1_l4.png" width="800"/>
+		<figcaption>Bezier Curve: Five Steps</figcaption>
+		<img src="task1_l5.png" width="800"/>
+		<figcaption>Bezier Curve: Curve Displayed</figcaption>
+		<img src="task1_curve.png" width="800"/>
+		<figcaption>Bezier Curve: Moved Points</figcaption>
+		<img src="task1_moved_points.png" width="800"/>
+		<figcaption>Bezier Curve: Modulating t Parameter</figcaption>
+		<img src="task1_moved_t.png" width="800"/>
+
+		<h2>Task 2 (Bezier Surfaces with Separable 1D de Casteljau)</h2>
+		<h3>De Casteljau's Algorithm Extended to Bezier Surfaces</h3>
+		<p>The extension of De Casteljau's algorithm to Bezier surfaces involves two stages. Given the n x n grid of points, we have the one dimension parameterized by u and the other by v (both are variables). So, first for each row parameterized by u, you can obtain a Bezier curve using the methods of task 1. Then for each curve, evaluating the points at the passed in u value results in a final set of points, equivalent to the number of curves, that run along the v axis, obtaining a Bezier curve defined on those points that is then evaluated at the passed in v value. My implementation involved filling out the three defined functions. evaluateStep took the same form as task 1 with the added z axis. evaluate1D applied the recursive process described in task 1 until a single point was obtained, continually calling evaluateStep to get a set, of a cardinality one less than before, of intermediate control points. Finally, evaluate ran the process. With the passed in u and v values and the grid, for each row of points, I called evaluate1D to obtain the point on the Bezier curve defined by that row at u. Collecting all those points, I ran evaluate1D once more to obtain the point on the Bezier curve at v, and this was what was returned.</p>
+		<h3>Teapot Image</h3>
+		<img src="task2.png" width="800"/>
+
+		<h2>Task 3 (Area-Weighted Vertex Normals)</h2>
+		<h3>Implementing Area-Weighted Vertex Normals</h3>
+		<p>My implementation of area-weighted normals involved two steps: figuring out the normal vector for each face adjacent to the vertex and then using that normal vector to figure out the area of that face, which was then used to update a running sum of area-weighted normals. For the first part, I used the halfedge operations to traverse through the adjacent faces, using printNeighborPositions from the primer as a guide on how to do so. At each face, I took the cross product of two halfedges within the interior to get a normal vector which I appended to a C++ vector. Once I got all the normal vectors, I iterated through the C++ vector storing them all, took the norm of the normal vectors and multiplied by 0.5 to get the area of the face, and then I added the normal vector multiplied by the associated area to the running sum that was returned in the end.</p>
+		<h3>Task 3 Images</h3>
+		<figcaption>Before enabling vertex normals</figcaption>
+		<img src="task3_pre.png" width="800"/>
+		<figcaption>After enabling vertex normals</figcaption>
+		<img src="task3_post.png" width="800"/>
+
+		<h2>Task 4 (Edge Flip)</h2>
+		<h3>Implementing Edge Flips and Debugging</h3>	
+		<p>I implemented the edge flip operation using the method described in the following link from the section primer: <a href="http://15462.courses.cs.cmu.edu/fall2015content/misc/HalfedgeEdgeOpImplementationGuide.pdf">link</a>. In essence, this involved two steps. First, for every element involved in the local neighborhood of the operation, I created an iterator to it. Then, I manually reassigned elements for each of those original elements such that the result reflected an edge flip, as depicted in the linked article. The picture below shows the diagram pre- and post-flip that I used to determine the elements involved and how they were to be reassigned. An interesting detail of this implementation was that I used no logic in my code. In fact, I did all the heavy lifting by hand and simply wrote out all the changes in my code. In order to not face difficult bugs, I even performed reassignments that featured no changes like the guide suggested. This made coding the operation and debugging easy, to the detriment of performance, however. I simply had to look at my picture reference and write out what I saw. After going through my reference a couple of times to make sure that it was correct and that my code properly reflected it, I was able to successfully implement the operation–debugging thus took place off of the computer too. I was never stuck. It was only a matter of crossing my t’s and dotting my i’s. As a result, I had no eventful debugging journeys. With respect to runtime and memory, since I only consider the relevant elements of the mesh, my implementation is not mesh size specific. </p>
+		<h3>Flip Reference</h3>
+		<img src="flip_ref.png" width="800"/>
+		<h3>Task 4 Images</h3>
+		<figcaption>Before edge flips</figcaption>
+		<img src="task4_pre.png" width="800"/>
+		<figcaption>After edge flips, including degenerate cases</figcaption>
+		<img src="task4_post.png" width="800"/>
+
+		<h2>Task 5 (Edge Split)</h2>
+		<h3>Implementing Edge Splits and Debugging</h3>
+		<p>I implemented the edge split operation using the method described in the following link from the section primer for edge flips, just changing the reference picture: <a href="http://15462.courses.cs.cmu.edu/fall2015content/misc/HalfedgeEdgeOpImplementationGuide.pdf">link</a>. In essence, this involved three steps. First, for every element involved in the local neighborhood of the operation, I created an iterator to it. Then for new elements as a result of the edge split, I created a respective mesh element. Finally, I manually reassigned elements for all of these elements such that the result reflected an edge split (the exact reassignments were those depicted in the article). The picture below shows the diagram pre- and post-split that I used to determine the elements involved and how they were to be reassigned. An interesting detail of this implementation, like with the edge flip operation, was that I used no logic in my code. In fact, I did all the heavy lifting by hand and simply wrote out all the changes in my code. In order to not face difficult bugs, I even performed reassignments that featured no changes like the guide suggested. This made coding the operation and debugging easy, to the detriment of performance, however. I simply had to look at my picture reference and write out what I saw. After going through my reference a couple of times to make sure that it was correct and that my code properly reflected it, I was able to successfully implement the operation–debugging thus took place off of the computer too. I was never stuck. It was only a matter of crossing my t’s and dotting my i’s. As a result, I had no eventful debugging journeys. With respect to runtime, since I only consider the relevant elements of the mesh, my implementation is not mesh size specific.</p>
+		<h3>Split Reference</h3>
+		<img src="split_ref.png" width="800"/>
+		<h3>Task 5 Images</h3>
+		<figcaption>Before edge splits</figcaption>
+		<img src="task5_pre_splits.png" width="800"/>
+		<figcaption>After edge splits</figcaption>
+		<img src="task5_post_splits.png" width="800"/>
+		<figcaption>Before edge flips and splits</figcaption>
+		<img src="task5_pre_mul.png" width="800"/>
+		<figcaption>After edge flips and splits</figcaption>
+		<img src="task5_post_mul.png" width="800"/>
+
 	</body>
 </html>
