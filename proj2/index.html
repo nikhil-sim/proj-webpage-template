@@ -73,5 +73,34 @@
 		<figcaption>After edge flips and splits</figcaption>
 		<img src="task5_post_mul.png" width="800"/>
 
+		<h2>Task 6 (Loop Subdivision for Mesh Upsampling)</h2>
+		<h3>Implementing Loop Subdivision and Debugging</h3>
+		<p>I implemented loop subdivision by essentially following the comments within the upsample method, taking the common loop subdivision algorithm and modifying the order of execution. To explain a bit what is happening, we first calculated the new positions of existing vertices in our mesh using the equation (1 - n * u) * original_position + u * original_neighbor_position_sum, and then we calculate the position of new vertices that appear on an edge using 3/8 * (A + B) + 1/8 * (C + D). The below picture shows the pictorial derivation. After finding the new positions, we split the vertices, assigning the newly formed vertices the correct position as well as the old vertices, and then we flip, making a more granular mesh. The operation to split and flip occurs after we calculate positioning in this implementation.</p>
+		<h3>New Positions Picture</h3>
+		<img src="new_position_pic.png" width="800">
+		<h3>Loop Subdivision Pictures on cube.dae</h3>
+		<figcaption>Subdivision Level 0</figcaption>
+		<img src="cube_0.png" width="800">
+		<figcaption>Subdivision Level 1</figcaption>
+		<img src="cube_1.png" width="800">
+		<figcaption>Subdivision Level 2</figcaption>
+		<img src="cube_2.png" width="800">
+		<figcaption>Subdivision Level 3</figcaption>
+		<img src="cube_3.png" width="800">
+		<figcaption>Subdivision Level 4</figcaption>
+		<img src="cube_4.png" width="800">
+		<h3>Effects of Loop Subdivision</h3>
+		<p>From the pictures above, you can notice that sharp corners and edges are smoothed as a result of the loop subdivision processes. This is as we take weighted averages of neighboring vertices in determining positions of new vertices. So, when we have a vertex newly created in that region, its position is the average of vertices in different directions far enough to make a difference, so the result is an averaged out effect. By increasing the concentration of vertices in the corner by pre-splitting edges, this averaged out effect is subdued and the general corner shape is maintained, though you will still see some smoothing.</p>
+		<h3>Remedying Asymmetry</h3>
+		<p>After playing around with the cube, you can see that asymmetry, in part, is caused by the fact that an edge’s neighboring vertex causes a pull effect to one side of the cube when split just by the composition of the original arrangement. If you envision the cube on a table, the edge giving height is, for example, pulled in one direction–downwards by the two vertices on the base connected to it. By spreading out the pulling force, we can reduce asymmetry. This can be done, for example, by splitting edges in the middle of faces, creating vertices towards the center of faces providing a force that encourages neutrality in a sense. Below are pictures showing the effects.</p>
+		<h3>Reduced Asymmetry Images</h3>
+		<img src="reduced_asym_course.png" width="800">
+		<img src="reduced_asym.png" width="800">
+
+
+
+
+
+
 	</body>
 </html>
